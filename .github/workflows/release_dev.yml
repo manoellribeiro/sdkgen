@@ -2,7 +2,7 @@ name: release_dev
 on:
   push:
     branches:
-      - master
+      - main
 jobs:
   _version:
     runs-on: ubuntu-latest
@@ -17,13 +17,13 @@ jobs:
     needs: [_version]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           name: version
       - uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 20.x
           registry-url: https://registry.npmjs.org
       - run: cp LICENSE parser/
       - run: npm install
@@ -49,13 +49,13 @@ jobs:
     needs: [_version]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           name: version
       - uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 20.x
           registry-url: https://registry.npmjs.org
       - run: cp LICENSE browser-runtime/
       - run: npm install
@@ -81,7 +81,7 @@ jobs:
     needs: [_version]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           name: version
@@ -91,7 +91,7 @@ jobs:
           distribution: zulu
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.3.x
+          flutter-version: 3.10.x
           channel: stable
       - run: cp LICENSE dart-runtime/
       - run: flutter pub get
@@ -99,9 +99,8 @@ jobs:
       - run: "sed 's/version: 0.0.0/version: '$(cat ../version.txt)'/' -i pubspec.yaml"
         working-directory: ./dart-runtime
       - run: |
-          export PUB_CACHE=$GITHUB_WORKSPACE/pub-cache && \
-          mkdir -p $PUB_CACHE && \
-          echo "$PUB_CREDENTIALS" > $PUB_CACHE/credentials.json && \
+          mkdir -p $XDG_CONFIG_HOME/dart && \
+          echo "$PUB_CREDENTIALS" > $XDG_CONFIG_HOME/dart/pub-credentials.json && \
           flutter pub pub publish -v -f
         working-directory: ./dart-runtime
         env:
@@ -111,13 +110,13 @@ jobs:
     needs: [_version]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           name: version
       - uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 20.x
           registry-url: https://registry.npmjs.org
       - run: cp LICENSE typescript-generator/
       - run: npm install
@@ -143,13 +142,13 @@ jobs:
     needs: [_version]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           name: version
       - uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 20.x
           registry-url: https://registry.npmjs.org
       - run: cp LICENSE csharp-generator/
       - run: npm install
@@ -175,13 +174,13 @@ jobs:
     needs: [_version]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           name: version
       - uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 20.x
           registry-url: https://registry.npmjs.org
       - run: cp LICENSE fsharp-generator/
       - run: npm install
@@ -207,13 +206,13 @@ jobs:
     needs: [_version]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           name: version
       - uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 20.x
           registry-url: https://registry.npmjs.org
       - run: cp LICENSE kotlin-generator/
       - run: npm install
@@ -239,13 +238,13 @@ jobs:
     needs: [_version]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           name: version
       - uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 20.x
           registry-url: https://registry.npmjs.org
       - run: cp LICENSE swift-generator/
       - run: npm install
@@ -271,13 +270,13 @@ jobs:
     needs: [_version]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           name: version
       - uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 20.x
           registry-url: https://registry.npmjs.org
       - run: cp LICENSE dart-generator/
       - run: npm install
@@ -303,13 +302,13 @@ jobs:
     needs: [_version]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           name: version
       - uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 20.x
           registry-url: https://registry.npmjs.org
       - run: cp LICENSE cli/
       - run: npm install
@@ -335,13 +334,13 @@ jobs:
     needs: [_version]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           name: version
       - uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 20.x
           registry-url: https://registry.npmjs.org
       - run: cp LICENSE playground/
       - run: npm install && npm install -g json && bash .ci.sh
@@ -370,13 +369,13 @@ jobs:
     needs: [_version]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           name: version
       - uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 20.x
           registry-url: https://registry.npmjs.org
       - run: cp LICENSE node-runtime/
       - run: npm install
@@ -402,7 +401,7 @@ jobs:
     needs: [_version]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           name: version
@@ -411,7 +410,7 @@ jobs:
           dotnet-version: 5.0.x
       - uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 20.x
       - run: cp LICENSE dotnet-runtime/runtime
       - run: npm install && npm install -g json && bash .ci.sh
         working-directory: ./playground
@@ -430,7 +429,7 @@ jobs:
     needs: [_version]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           name: version

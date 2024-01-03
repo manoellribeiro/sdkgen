@@ -2,23 +2,23 @@ name: docs_dev
 on:
   push:
     branches:
-      - master
+      - main
 jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
           python-version: "3.x"
       - uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 20.x
           registry-url: https://registry.npmjs.org
       - run: pip install mkdocs-material
       - run: sed -i -e "s/sdkgen.github.io/sdkgen.github.io\/dev/g" mkdocs.yml
       - run: mkdocs build
-      - run: git clone --depth 1 -b master https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/sdkgen/sdkgen.github.io.git
+      - run: git clone --depth 1 -b main https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/sdkgen/sdkgen.github.io.git
       - run: rm -rf sdkgen.github.io/dev
       - run: mv site sdkgen.github.io/dev
       - run: |

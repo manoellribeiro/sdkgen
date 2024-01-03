@@ -1,13 +1,13 @@
 # sdkgen
 
-[![test status badge](https://github.com/sdkgen/sdkgen/workflows/test/badge.svg?branch=master)](https://github.com/sdkgen/sdkgen/actions)
+[![test status badge](https://github.com/sdkgen/sdkgen/workflows/test/badge.svg?branch=main)](https://github.com/sdkgen/sdkgen/actions)
 [![telegram badge](https://img.shields.io/badge/telegram-sdkgen-179CDE)](https://t.me/sdkgen)
 
 # Getting Started
 
 ## Installing sdkgen
 
-First of all you need Node.js 14 or newer on your machine. We recommend using the latest LTS version, check for it here: https://nodejs.org/en/download/.
+First of all you need Node.js 16 or newer on your machine. We recommend using the latest LTS version, check for it here: https://nodejs.org/en/download/.
 
 Install the global CLI:
 

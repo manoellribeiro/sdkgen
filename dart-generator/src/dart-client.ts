@@ -7,7 +7,6 @@ export function generateDartClientSource(ast: AstRoot): string {
   let code = "";
 
   code += `// ignore_for_file: constant_identifier_names
-import 'dart:ui';
 `;
 
   if (hasType(ast, BytesPrimitiveType)) {
@@ -20,7 +19,8 @@ import 'dart:ui';
 `;
   }
 
-  code += `import 'package:sdkgen_runtime/types.dart';
+  code += `import 'package:http/http.dart' as http;
+import 'package:sdkgen_runtime/types.dart';
 import 'package:sdkgen_runtime/http_client.dart';
 `;
 
@@ -40,21 +40,20 @@ import 'package:sdkgen_runtime/http_client.dart';
   }
 
   code += `class ApiClient extends SdkgenHttpClient {
-  ApiClient(String baseUrl) : super(baseUrl, _typeTable, _fnTable, _errTable);
+  ApiClient(String baseUrl, [http.Client? client]) : super(baseUrl, client, _typeTable, _fnTable, _errTable);
 ${ast.operations
   .filter(op => op.annotations.every(ann => !(ann instanceof HiddenAnnotation)))
   .map(
     op => `
   ${op.returnType instanceof VoidPrimitiveType ? "Future<void> " : `Future<${generateTypeName(op.returnType)}> `}${op.name}(${
-      op.args.length === 0
-        ? ""
-        : `{${op.args
-            .map(arg => `${arg.type instanceof OptionalType ? "" : "required "}${generateTypeName(arg.type)} ${mangle(arg.name)}`)
-            .join(", ")}}`
-    }) async { ${op.returnType instanceof VoidPrimitiveType ? "" : "return "}${cast(
-      `await makeRequest('${op.name}', {${op.args.map(arg => `'${arg.name}': ${mangle(arg.name)}`).join(", ")}})`,
-      op.returnType,
-    )}; }`,
+    op.args.length === 0
+      ? ""
+      : `{${op.args
+          .map(arg => `${arg.type instanceof OptionalType ? "" : "required "}${generateTypeName(arg.type)} ${mangle(arg.name)}`)
+          .join(", ")}}`
+  }) async { ${op.returnType instanceof VoidPrimitiveType ? "" : "final result = "}${`await makeRequest('${op.name}', {${op.args
+    .map(arg => `'${arg.name}': ${mangle(arg.name)}`)
+    .join(", ")}})`};${op.returnType instanceof VoidPrimitiveType ? "" : ` return ${cast("result", op.returnType)};`}}`,
   )
   .join("")}
 }\n\n`;
@@ -109,7 +108,9 @@ ${ast.operations
   for (const error of ast.errors) {
     const hasData = !(error.dataType instanceof VoidPrimitiveType);
 
-    code += `  '${error.name}': SdkgenErrorDescription('${error.dataType.name}', (msg, data) => ${error.name}(msg${hasData ? ", data" : ""})),\n`;
+    const dataArg = hasData ? ", data" : "";
+
+    code += `  '${error.name}': SdkgenErrorDescription('${error.dataType.name}', (msg, req, data) => ${error.name}(msg, req${dataArg})),\n`;
   }
 
   code += `};\n`;

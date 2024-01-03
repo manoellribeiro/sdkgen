@@ -16,7 +16,11 @@ export class TabNavComponent implements OnInit {
   loading = false;
   url = new FormControl("");
 
-  constructor(private sdkgen: SdkgenService, private toastr: ToastrService, private dialog: MatDialog) {}
+  constructor(
+    private sdkgen: SdkgenService,
+    private toastr: ToastrService,
+    private dialog: MatDialog,
+  ) {}
 
   ngOnInit() {
     // TODO: this doesn't support APIs under a path other than /
@@ -42,13 +46,13 @@ export class TabNavComponent implements OnInit {
 
       const parsedUrl = new URL(this.url.value!);
 
-      parsedUrl.pathname += `${/\/$/u.test(parsedUrl.pathname) ? "" : "/"}ast.json`;
+      parsedUrl.pathname += `${parsedUrl.pathname.endsWith("/") ? "" : "/"}ast.json`;
 
       const astUrl = parsedUrl.toString();
 
       console.debug("astUrl", astUrl);
 
-      const result = await fetch(astUrl).then(resp => (resp.ok ? resp.json() : resp));
+      const result = await fetch(astUrl).then(async resp => (resp.ok ? resp.json() : resp));
 
       if (result instanceof Response) {
         if (result instanceof Error) {
